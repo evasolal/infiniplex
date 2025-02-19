@@ -13,11 +13,11 @@ def generate_patient_data(filename):
         writer.writerow(['patient_id', 'outcome'])
 
         # Writing 50 rows of data
-        for _ in range(1, 1000):
-            patient_id = random.randint(1, 1000)
+        for i in range(1, 1000):
+            patient_id = i
             outcome = random.choice(outcomes)
             writer.writerow([patient_id, outcome])
 
 
 if __name__ == '__main__':
-    generate_patient_data("patients_data3.csv")
+    generate_patient_data("patients_data4.csv")

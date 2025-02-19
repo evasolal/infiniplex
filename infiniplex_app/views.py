@@ -71,8 +71,6 @@ def upload_csv(request):
 
     if request.method == 'POST' and request.FILES.get('csv_file'):
         error, success_message = process_csv_file(request)
-        if error is not None:
-            csv_form = None
 
     patients, sort_field, sort_order = get_ordered_patients(request)
 
