@@ -1,0 +1,203 @@
+/* General Body Style */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;  /* Align content to the left */
+    align-items: flex-start;      /* Align content to the top */
+    height: 100vh;
+    color: #333;
+    padding: 20px;                /* Add padding around the content */
+}
+
+/* Title Style */
+h1 {
+    font-size: 36px;
+    color: #4A90E2;
+    margin-bottom: 20px;  /* Add space below the title */
+    font-weight: 600;
+    margin-top: 20px;        /* Remove top margin */
+}
+
+/* Smaller spacing for the h4 title */
+h4 {
+    margin-bottom: 5px;  /* Reduce the space below the h4 title */
+}
+
+/* Form Container Style */
+.form-container {
+    margin-top: 5px;
+}
+
+/* Label Style */
+label {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input Style */
+input[type="file"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    margin-bottom: 0; /* Remove the bottom margin to reduce space */
+    width: 220px;     /* Adjust the width as needed */
+    height: 25px;     /* Adjust the height for better alignment */
+    display: inline-block;
+    text-align: center;
+}
+
+/* Button Style - Aligned on Same Line as Input */
+button {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-block;
+    height: 35px;  /* Match the height with the input field */
+    vertical-align: middle; /* Align vertically with input */
+}
+
+button:hover {
+    background-color: #357ab7;
+    transform: scale(1.05);
+}
+
+/* Optional: Button Disabled Style */
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+/* Responsive Styling: Stack elements vertically for small screens */
+@media (max-width: 768px) {
+    .form-group {
+        flex-direction: column;  /* Stack elements vertically */
+    }
+}
+
+label {
+    display: none;
+}
+
+/* Form group for aligning input and button */
+.form-group {
+    display: flex;          /* Align form elements in a row */
+    align-items: center;    /* Vertically center the elements */
+    gap: 10px;              /* Add space between elements */
+}
+
+.success-message{
+    color: midnightblue;                   /* White text */
+    font-size: 16px;
+    font-weight: bold;/* Font size */
+
+}
+.error-message{
+    color: red;
+        font-size: 16px;
+    font-weight: bold;
+}
+/* Table Style */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+}
+
+/* Table Headers */
+th {
+    background-color: #4A90E2;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    cursor: pointer;
+    text-align: center;
+
+}
+
+/* Table Cells */
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    justify-content: center
+}
+
+/* Hover Effect on Rows */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Zebra Stripes for Rows */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Focus on Sortable Columns */
+th:hover {
+    background-color: #357ab7;
+}
+.grey-row {
+    background-color: #f0f0f0;  /* Light grey background */
+    color: #aaa;                /* Lighter text color */
+}
+/* Container for the upload page */
+.upload-page-container {
+    position: relative; /* To allow positioning of child elements */
+    padding: 20px;
+}
+
+/* Style for the search input */
+.search-container {
+    position: absolute;
+    top: 20px; /* Adjust based on how far from the top you want the input */
+    right: 20px; /* Position it at the right corner */
+}
+
+#search-input {
+    padding: 8px;
+    font-size: 16px;
+    width: 200px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Style for the upload form */
+.upload-form {
+    margin-top: 80px; /* Adjust the margin to avoid overlap with the search input */
+}
+
+/* Basic styling for form inputs */
+input[type="file"], button {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #357ab7;
+}
