@@ -62,7 +62,7 @@ def save_patient(row):
 def upload_csv(request):
     csv_form = CSVUploadForm(request.POST)
     sort_form = SortForm(request.POST)
-    rows_form = RowsPerPageForm(request.POST or None, initial={'rows_cnt': str(request.session['rows_per_page'])})
+    rows_form = RowsPerPageForm(request.POST or None, initial={'rows_cnt': str(request.session.get('rows_per_page'))})
     error = None
     success_message = None
 
