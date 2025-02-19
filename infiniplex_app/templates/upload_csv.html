@@ -4,75 +4,87 @@
 <head>
     {% load static %}
 
+        <script src="{% static 'infiniplex_app/js/main.js' %}" defer></script>
         <link rel="stylesheet" href="{% static 'infiniplex_app/css/upload_csv.css' %}">
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <title>Revision Keeper</title>
 </head>
 <body>
     <h1>Revision Keeper</h1>
-     {% if form %}
-    <h4> Upload a New Outcome File </h4>
-        <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search for Patient ID or Outcome">
-    </div>
-    <div class="form-container">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ form.as_p }}
-                <div><button type="submit">Upload</button></div>
+<div class="search-container">
+    <form method="GET" action="">
+        <input type="text" name="patient_id_search" id="search-input" placeholder="Search for Patient ID."
+               value="{{ request.GET.search|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+</div>
+        {% if form %}
 
-            </div>
+        <div> Upload a New Outcome File </div>
 
-        </form>
+        <div class="form-container">
 
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                    <div><button type="submit">Upload</button></div>
+
+                </div>
+            </form>
              {% if error_message %}
         <div class="error-message"> {{ error_message }}</div>
-    {% endif %}
+        {% endif %}
 
-    </div>
+        </div>
     {% endif %}
 
     {% if success_message %}
         <div class="success-message"> {{ success_message }}</div>
     {% endif %}
 
-<h2>Patient List</h2>
+<h2>Patients List</h2>
+    <div class="sort-container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ sort_form.as_p }}
+                <button id="sort-button" type="submit">Sort</button>
 
-    <label for="primary-sort">Sort by:</label>
-<select id="primary-sort">
-    <option value="0">Date/Time</option>
-    <option value="1">Patient ID</option>
-    <option value="2">Outcome</option>
-</select>
+            </div>
 
-<label for="secondary-sort">Then by:</label>
-<select id="secondary-sort">
-    <option value="0">Date/Time</option>
-    <option value="1">Patient ID</option>
-    <option value="2">Outcome</option>
-</select>
+        </form>
 
-<button id="sort-button">Sort</button>
-
-
-    <!-- Table displaying all patients -->
+    </div>
     <table>
         <thead>
         <tr>
-                <th style="width: 15px;">Patient ID</th>
-                <th>Outcome</th>
-                <th style="width: 200px;">Updated At</th>
+            <th style="width: 45px;" >
+                <a class="sort-link" href="?sort=patient_id&order={% if sort_field == 'patient_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                   Patient ID
+                </a>
+            </th>
+                <th>
+                    <a class="sort-link" href="?sort=outcome&order={% if sort_field == 'outcome' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Outcome
+                    </a>
+                </th>
+                <th style="width: 200px;">
+                    <a class="sort-link" href="?sort=updated_at&order={% if sort_field == 'patient_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                    Updated At
+                    </a>
+                </th>
             </tr>
         </thead>
         <tbody>
             {% for patient in patients %}
             <tr class="{% if not patient.last_updated %}grey-row{% endif %}">
-                    <td style="width: 15px;">{{ patient.patient_id }}</td>
+                    <td style="width: 45px;">{{ patient.patient_id }}</td>
                     <td>{{ patient.outcome }}</td>
                     <td style="width: 200px;">{{ patient.formatted_date  }}</td>
 
-                </tr>
+            </tr>
             {% empty %}
                 <tr>
                     <td colspan="2">No patients available.</td>
@@ -80,109 +92,34 @@
             {% endfor %}
         </tbody>
     </table>
+<div class="rows-per-page">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ rows_form.as_p }}
+        </div>
+        </form>
+</div>
+
+<div class="pagination">
+    {% if patients_page.has_previous %}
+<button class="pagination_btn" onclick="window.location.href='?page={{ patients_page.previous_page_number }}'">&laquo; Previous </button>
+    {% endif %}
+
+    <label for="page-select">Go to page:</label>
+    <select id="page-select" >
+        {% for num in patients_page.paginator.page_range %}
+            <option value="{{ num }}" {% if num == patients_page.number %}selected{% endif %}>
+                Page {{ num }}
+            </option>
+        {% endfor %}
+    </select>
+
+    {% if patients_page.has_next %}
+<button class="pagination_btn" onclick="window.location.href='?page={{ patients_page.next_page_number }}'">Next &raquo; </button>
+    {% endif %}
+</div>
 </body>
 
 </html>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const table = document.querySelector('table');
-    const headers = table.querySelectorAll('th');
-
-    headers.forEach((header, index) => {
-        header.addEventListener('click', () => {
-            sortTableByColumn(table, index);
-        });
-    });
-
-    function sortTableByColumn(table, columnIndex) {
-        const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr')); // Sélectionne uniquement les lignes du tbody
-        const isAscending = table.querySelectorAll('th')[columnIndex].classList.contains('asc');
-
-        rows.sort((rowA, rowB) => {
-            const cellA = rowA.querySelectorAll('td')[columnIndex].textContent.trim();
-            const cellB = rowB.querySelectorAll('td')[columnIndex].textContent.trim();
-
-            const isNumeric = !isNaN(cellA) && !isNaN(cellB);
-            if (isNumeric) {
-                return (isAscending ? 1 : -1) * (parseFloat(cellA) - parseFloat(cellB));
-            }
-
-            return (isAscending ? 1 : -1) * cellA.localeCompare(cellB, undefined, { numeric: true });
-        });
-
-        // Vide le tbody et ajoute les lignes triées
-        while (tbody.firstChild) {
-            tbody.removeChild(tbody.firstChild);
-        }
-        rows.forEach(row => tbody.appendChild(row));
-
-        // Toggle le sens du tri
-        table.querySelectorAll('th').forEach(th => th.classList.remove('asc', 'desc'));
-        table.querySelectorAll('th')[columnIndex].classList.toggle(isAscending ? 'desc' : 'asc');
-    }
-});
-</script>
-<script>
-    document.getElementById('search-input').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            const query = this.value.toLowerCase();
-            const rows = document.querySelectorAll('table tbody tr');
-
-            rows.forEach(row => {
-                const textContent = row.textContent.toLowerCase();
-                if (textContent.includes(query)) {
-                    row.style.display = '';  // Show row
-                } else {
-                    row.style.display = 'none';  // Hide row
-                }
-            });
-        }
-    });
-
-
-</script>
-<script>
-    document.getElementById('sort-button').addEventListener('click', function () {
-            const table = document.querySelector('#patient-table tbody');
-            const rows = Array.from(table.querySelectorAll('tr'));
-
-            const primaryIndex = parseInt(document.getElementById('primary-sort').value);
-            const secondaryIndex = parseInt(document.getElementById('secondary-sort').value);
-
-            function parseCellValue(cell, index) {
-                const value = cell.textContent.trim();
-
-                // Convert Date/Time column to timestamp
-                if (index === 0) {
-                    const parts = value.split(/[/ :]/);  // Split by /, space, and :
-                    return new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4], parts[5]).getTime();
-                }
-
-                // Convert numbers
-                return isNaN(value) ? value.toLowerCase() : parseFloat(value);
-            }
-
-            rows.sort((rowA, rowB) => {
-                const aPrimary = parseCellValue(rowA.cells[primaryIndex], primaryIndex);
-                const bPrimary = parseCellValue(rowB.cells[primaryIndex], primaryIndex);
-                const aSecondary = parseCellValue(rowA.cells[secondaryIndex], secondaryIndex);
-                const bSecondary = parseCellValue(rowB.cells[secondaryIndex], secondaryIndex);
-
-                // Primary sorting
-                if (aPrimary < bPrimary) return -1;
-                if (aPrimary > bPrimary) return 1;
-
-                // Secondary sorting if primary is equal
-                if (aSecondary < bSecondary) return -1;
-                if (aSecondary > bSecondary) return 1;
-
-                return 0;
-            });
-
-            // Reattach sorted rows
-            rows.forEach(row => table.appendChild(row));
-        });
-</script>
 
